@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import pandas as pd
 import os
+import sys
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -62,7 +63,7 @@ df.to_csv("CT-100_ikman_results.csv", index_label="Row No")
 
 # Print the path where the CSV file has been stored
 csv_path = os.path.abspath("ikman_results.csv")
-print(f"CSV file has been saved at: {csv_path}")
+print(f"CSV file has been saved at: {csv_path}\n")
 
 df["Price"] = df["Price"].str.replace(",", "").astype(float)
 
@@ -75,6 +76,11 @@ formatted_prices = average_price_by_location.to_string(header=False)
 
 # Function to send email with analysis report
 def send_email(sender_email, receiver_email, password, average_price_by_location, csv_filename="CT-100_ikman_results.csv"):
+    # Checking whether the inputs are correctly provided
+    if sender_email == " " or receiver_email == " " or password == " ":
+        print("Email credentials cannot be empty. Please provide valid email addresses and password.")
+        sys.exit()
+     
     # Create the email content
     msg = MIMEMultipart()
     msg["From"] = sender_email
